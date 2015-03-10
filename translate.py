@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from Bio.Seq import Seq
+from Bio.Alphabet import generic_dna
 import sys
 
 #usage function
@@ -31,11 +32,20 @@ class Entry:
 	
 	#class function to translate nucleotide string into peptide string. Return translated object
 	def translate(self):
+		seqObj = Seq(self.nucStr, generic_dna)
+		self.nucStr = str(seqObj.translate())
 		return
 
 	#class function for entry to write the data back out 
 	def write(self, outfile):
+		outfile.write(entry.taxID + "\n")
+		outfile.write(entry.nucID + "\n")
+		outfile.write(entry.nucStr + "\n")
+		outfile.write(entry.pepID + "\n")
+		outfile.write(entry.pepStr + "\n")
+		outfile.write("#########################################################################################################\n")
 		return
+
 	#prints object	
 	def show(self):
 		print("\nTaxID: " + self.taxID)
@@ -68,6 +78,7 @@ outfile = open(sys.argv[2], 'w')
 line = infile.readline().strip()
 while line != "":
 	entry = Entry()
+	
 	entry.taxID = line
 	entry.nucID = infile.readline().strip()
 	entry.nucStr = infile.readline().strip()
@@ -75,7 +86,6 @@ while line != "":
 	entry.pepStr = infile.readline().strip()
 	delimiter = infile.readline().strip()
 	
-	entry.show()
 	if not (isinstance(delimiter, str)) :
 		print("Error: offset in parsing. Delimiter found is: ")
 		print(delimiter)
@@ -89,7 +99,5 @@ while line != "":
 		entry.write(outfile)
 	line = infile.readline().strip()
 
-
-
-
-	
+infile.close()
+outfile.close()
